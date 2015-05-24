@@ -1,29 +1,58 @@
+from functools import *
+from math import * 
 
-B = 5
-C = 10
-D = 25
+from numpy import polyfit, corrcoef
 
-coinValues = [B,C,D]
+coinValues = []
 
-def baseValue(i):
-	return i//coinValues[0]+1
+begin = 1
+end = 100
+step = 1
 
-def getCoins(j):
-	dimes = []
-	quarters = []
+def getP(i):
+	return i**3/7500#+(.09*i+.833)**2 #+ e**(1.294*log(i)-1.671)
 
-	for i in range(0,C):
-		dimes.append(baseValue(i))
-		quarters.append(dimes[i])				
+def start():
+	global coinValues	
+	global begin
+	global end
+	global step
+	command = input("> ")
+	if(not(command == "q") and not(command == "quit")):
+		if("am" in command):
+			if(len(command.split()) == 2):
+				coinValues = [5,10,25]
+				print(getChange(int(command.split()[1])))
+			elif command.split()[2].lower() == "t" or command.split()[2].lower() == "true":
+				coinValues = [5,10,25,50]
+				print(getChange(int(command.split()[1])))
+		elif("ch" in command):
+			coinValues = command.split()[2:]
+			for i in range(0,len(coinValues)):
+				coinValues[i]= int(coinValues[i])
+			try:
+				print(getChange(int(command.split()[1])))	
+			except IndexError:
+				print("Invalid Input, check if coin values are less than the change")			
+		elif("cm" in command):
+			values = []
+			coinValues = [5,10,25]
+			for i in range(begin,end,step):
+				values.append(getCoins(i) - getP(i))
+			curve = polyfit(list(range(begin,end,step)),values,2)
+			curve = list(map(lambda x: float(round(x,2)),curve))
+			r = corrcoef(values,list(map(lambda x: curve[0]*x**2+curve[1]*x+curve[2],list(range(begin,end,
+			step)))))[0,1]
+			print(begin,end,curve,r)
 	
-	for i in range(C,D):
-		dimes.append(dimes[i-C]+baseValue(i))
-		quarters.append(dimes[i])
-	
-	for i in range(D,j+1):
-		dimes.append(dimes[i-C]+baseValue(i))
-		quarters.append(dimes[i]+quarters[i-D])
-	return quarters[j]
+		#Set Begin
+		elif("sb" in command):
+			begin = int(command.split()[1])
+		elif("se" in command):
+			end = int(command.split()[1])
+		elif("ss" in command):
+			step = int(command.split()[1])
+		start()
 
 def getChange(j):
 	
@@ -31,6 +60,8 @@ def getChange(j):
 	#Due to explicit value for first coin
 	coins = []
 	
+	if(len(coinValues) == 1):
+		return j//coinValues[0]+1	
 	
 	for currCoin in range(0,len(coinValues)-1):
 		tempCoins = []
@@ -52,19 +83,39 @@ def getChange(j):
 				tempCoins.append(tempCoins[i-coinValues[currCoin+1]]+coins[currCoin-1][i])				
 						
 		coins.append(tempCoins)
-		if(currCoin == 1):
-			pass#return tempCoins[j]
 
-	return coins[len(coins)-1][j]
-Z = 100 
-print(getCoins(Z))
-print(getChange(Z))
-def numNickels(i):
-	dimes = [1]*5+[2]*5+[4]*5+[6]*5+[9]*5
-	quarters = [1]*5+[2]*5+[4]*5+[6]*5+[9]*5
-	for i in range(25,i+1):
-		dimes.append(dimes[i-10]+i//5+1)
-		quarters.append(dimes[i]+quarters[i-25])
-	return quarters[i]
-print(numNickels(Z))
+	return coins[len(coins)-1][j] 
+def baseValue(i):
+        return i//coinValues[0]+1
+
+def getCoins(j):
+        dimes = []
+        quarters = []
+
+        for i in range(0,10):
+                dimes.append(baseValue(i))
+                quarters.append(dimes[i])
+
+        for i in range(10,25):
+                dimes.append(dimes[i-10]+baseValue(i))
+                quarters.append(dimes[i])
+
+        for i in range(25,j+1):
+                dimes.append(dimes[i-10]+baseValue(i))
+                quarters.append(dimes[i]+quarters[i-25])
+        return quarters[j]
+
+
+
+print("""
+Commands
+q or quit: Exits the program
+am [Integer Coin] [Opt. Boolean Half Dollar]: Gives change in American dollar, half dollar assumed to be false
+ch [Integer Coin] [Coin Values]: Gives change based on coin values, everything seperated by a space
+cm [Integer Coin]: Compares all the values until the coin with x^3/7500
+sb [Integer Value]: Sets the starting value for comparing
+se [Integer Value]: Sets the ending value for comparing
+ss [Integer Value]: Sets the step value for comparing
+""")
+start()
 
