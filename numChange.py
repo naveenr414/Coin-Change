@@ -9,6 +9,22 @@ begin = 1
 end = 100
 step = 1
 
+def calcR():
+	global coinValues
+	global begin
+	global end
+	global step
+
+	values = []
+	coinValues = [5,10,25]
+	for i in range(begin,end,step):
+		values.append(getCoins(i) - getP(i))
+	curve = polyfit(list(range(begin,end,step)),values,2)
+	curve = list(map(lambda x: float(round(x,2)),curve))
+	r = corrcoef(values,list(map(lambda x: curve[0]*x**2+curve[1]*x+curve[2],list(range(begin,end,
+	step)))))[0,1]
+	print(begin,end,curve,r)
+
 def getP(i):
 	return i**3/7500#+(.09*i+.833)**2 #+ e**(1.294*log(i)-1.671)
 
@@ -35,15 +51,14 @@ def start():
 			except IndexError:
 				print("Invalid Input, check if coin values are less than the change")			
 		elif("cm" in command):
-			values = []
-			coinValues = [5,10,25]
-			for i in range(begin,end,step):
-				values.append(getCoins(i) - getP(i))
-			curve = polyfit(list(range(begin,end,step)),values,2)
-			curve = list(map(lambda x: float(round(x,2)),curve))
-			r = corrcoef(values,list(map(lambda x: curve[0]*x**2+curve[1]*x+curve[2],list(range(begin,end,
-			step)))))[0,1]
-			print(begin,end,curve,r)
+			calcR()
+		elif("cl" in command):
+			endLoop = end+1
+			beginLoop = begin
+			for i in range(beginLoop,endLoop,step):
+				end = i	
+				begin = 0	
+				calcR()
 	
 		#Set Begin
 		elif("sb" in command):
@@ -112,7 +127,8 @@ Commands
 q or quit: Exits the program
 am [Integer Coin] [Opt. Boolean Half Dollar]: Gives change in American dollar, half dollar assumed to be false
 ch [Integer Coin] [Coin Values]: Gives change based on coin values, everything seperated by a space
-cm [Integer Coin]: Compares all the values until the coin with x^3/7500
+cm: Compares all the values until the coin with x^3/7500
+cl: Calculates regression values until the end value
 sb [Integer Value]: Sets the starting value for comparing
 se [Integer Value]: Sets the ending value for comparing
 ss [Integer Value]: Sets the step value for comparing
