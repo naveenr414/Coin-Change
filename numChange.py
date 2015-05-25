@@ -53,13 +53,20 @@ def start():
 		elif("cm" in command):
 			calcR()
 		elif("cl" in command):
+			if(len(command.split())>2):
+				c = command.split()[1:]
+				coinValues = list(map(lambda x: int(x),c))
+				print(coinValues)
+			
 			endLoop = end+1
 			beginLoop = begin
 			for i in range(beginLoop,endLoop,step):
 				end = i	
-				begin = 0	
+				begin = 0
+				print(begin,end)	
 				calcR()
-	
+			begin = beginLoop
+			end = endLoop-1	
 		#Set Begin
 		elif("sb" in command):
 			begin = int(command.split()[1])
