@@ -9,24 +9,41 @@ begin = 1
 end = 100
 step = 1
 
-def calcR():
+def calcR(s=True):
 	global coinValues
 	global begin
 	global end
 	global step
 
 	values = []
-	coinValues = [5,10,25]
+	f = open("J.txt","a")
 	for i in range(begin,end,step):
-		values.append(getCoins(i) - getP(i))
-	curve = polyfit(list(range(begin,end,step)),values,2)
-	curve = list(map(lambda x: float(round(x,2)),curve))
-	r = corrcoef(values,list(map(lambda x: curve[0]*x**2+curve[1]*x+curve[2],list(range(begin,end,
-	step)))))[0,1]
+		if(s):
+			values.append(getCoins(i) - getP(i))
+		else:
+			values.append(getCoins(i))
+	if(s):
+		curve = polyfit(list(range(begin,end,step)),values,2)
+	else:
+		curve = polyfit(list(range(begin,end,step)),values,3)
+	curve = list(map(lambda x: float(round(x,5)),curve))
+	if(s):
+		r = corrcoef(values,list(map(lambda x: curve[0]*x**2+curve[1]*x+curve[2],list(range(begin,end,
+		step)))))[0,1]
+	else:
+		r = corrcoef(values,list(map(lambda x: curve[1]*x**3+curve[1]*x**2+curve[2]*x+curve[3],list(range(begin,end,step)))))[0,1]
+	if(s):
+		curve = [round(getP(1),5)]+(curve)
 	print(begin,end,curve,r)
+	f.write(str(begin)+ " "+str(end) + " "+str(curve) + " " + str(r)+"\n")
+	f.close()
 
 def getP(i):
-	return i**3/7500#+(.09*i+.833)**2 #+ e**(1.294*log(i)-1.671)
+	p = 1
+	for j in range(0,len(coinValues)):
+		p*=(j+1)*(coinValues[j])
+	return i**(len(coinValues))/p
+
 
 def start():
 	global coinValues	
@@ -51,13 +68,21 @@ def start():
 			except IndexError:
 				print("Invalid Input, check if coin values are less than the change")			
 		elif("cm" in command):
+			calcR(False)
 			calcR()
 		elif("cl" in command):
+			c = command.split()[1:]
+			if(c!=[]):
+				z = []
+				for i in range(0,len(c)):
+					z.append(int(c[i]))
+				coinValues = z
+			print(coinValues)
 			endLoop = end+1
 			beginLoop = begin
-			for i in range(beginLoop,endLoop,step):
-				end = i	
-				begin = 0	
+			for i in range(beginLoop,beginLoop+step):
+				end+=1 	
+				begin+=1	
 				calcR()
 	
 		#Set Begin
