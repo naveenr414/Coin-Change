@@ -3,7 +3,6 @@ from stats import calcRegression
 from util import lcm
 import numpy
 numpy.seterr(all='ignore')
-
 coins = [1,5,10,25]
 
 def lc(args):
@@ -27,18 +26,22 @@ def lc(args):
 
 	a = ""
 	for i in range(0,len(c)):
-		a+=str(c[i])+"x^"+str(len(c)-i)+" "
+		a+=str(c[i])+"x^"+str(len(c)-(i+1))+" "
 	
 	a+="\n"+str(r)	
 
 	return a
 
 def ap(args):
+	f = open("dump.txt","w")
 	start = int(args[0])
+	iterations = len(coins)
 	uniquePolys = int(lcm(coins))
-	for i in range(start,start+uniquePolys+1):
-		print(i%uniquePolys,lc([str(i),str(uniquePolys),str(len(coins)-1)]))	
-
+	for i in range(start,start+uniquePolys*iterations):
+		
+		#Argument to Pass Into the LC Function (Starting Value,Step, Number of Iterations)
+		passArg = [str(i),str(uniquePolys),str(iterations)]
+		f.write(str(i%uniquePolys) + " "+lc(passArg).split("\n")[0] + "\n")	
 def parse(command):
 	global coins
 
@@ -68,7 +71,7 @@ def parse(command):
 		ap(args)
 #Where all the user input is taken
 def mainLoop():
-
+	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys")
 	#Basic Command Line 
 	command = input("> ")
 
