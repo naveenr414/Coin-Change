@@ -1,6 +1,6 @@
 from base import getChange
-from stats import calcRegression
-from util import lcm
+from stats import calcRegression, PRECISION
+from util import lcm, factorial
 import numpy
 numpy.seterr(all='ignore')
 coins = [1,5,10,25]
@@ -42,6 +42,41 @@ def ap(args):
 		#Argument to Pass Into the LC Function (Starting Value,Step, Number of Iterations)
 		passArg = [str(i),str(uniquePolys),str(iterations)]
 		f.write(str(i%uniquePolys) + " "+lc(passArg).split("\n")[0] + "\n")	
+
+def cs(args):
+	#Compare to Schurs
+
+	start = 1
+	step = 1
+	iterations = int(args[0])
+	
+	
+	without = lc([start,step,iterations]).split("\n")[0]
+	xAxis = list(range(1,1+iterations))
+	yAxis = []
+
+	productOfCoins = 1
+
+	for i in range(0,len(coins)):
+		productOfCoins*=coins[i]
+	firstTerm = 1/(factorial(len(coins)-1)*productOfCoins)	
+	degree = len(coins)-1
+	
+	for i in xAxis:
+		yAxis.append(getChange(i,coins) - i**degree*firstTerm)
+		
+	reg = calcRegression(xAxis,yAxis,degree-1)[0]
+
+	for i in reg:
+		i = round(i,PRECISION)
+
+	equation = str(round(firstTerm,PRECISION))+"x^"+str(degree) + " "
+	for i in range(0,len(reg)):
+		equation+=str(round(reg[i],5))+"x^"+str(degree-(1+i))
+		equation+=" "
+	return [without,equation] 	
+	
+
 def parse(command):
 	global coins
 
@@ -69,9 +104,13 @@ def parse(command):
 
 	elif(command == "ap"):
 		ap(args)
+
+	elif(command == "cs"):
+		print(cs(args)[0])
+		print(cs(args)[1])
 #Where all the user input is taken
 def mainLoop():
-	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys")
+	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys\ncs Compare to Schurs")
 	#Basic Command Line 
 	command = input("> ")
 

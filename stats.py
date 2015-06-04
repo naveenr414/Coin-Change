@@ -2,7 +2,7 @@ from numpy import corrcoef, polyfit
 import numpy
 
 #How many decimal places will the coefficient go to
-PRECISION = 6 
+PRECISION = 5 
 numpy.seterr(all = 'ignore')
 
 def calcRegression(xAxis,yAxis,degree):
