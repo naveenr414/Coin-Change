@@ -1,81 +1,6 @@
-from base import getChange
-from stats import calcRegression, PRECISION
-from util import lcm, factorial
-import numpy
-numpy.seterr(all='ignore')
+from base import *
+
 coins = [1,5,10,25]
-
-def lc(args):
-	#Get the regression value for a list of coins
-
-
-	start = int(args[0])
-	step = int(args[1])
-	iterations = int(args[2])
-	end = start+step*iterations
-
-	xAxis = list(range(start,end,step))
-	yAxis = []
-
-	for i in xAxis:
-		yAxis.append(getChange(i,coins))
-
-	r = calcRegression(xAxis,yAxis,len(coins)-1)
-	c = r[0]
-	r = r[1]		
-
-	a = ""
-	for i in range(0,len(c)):
-		a+=str(c[i])+"x^"+str(len(c)-(i+1))+" "
-	
-	a+="\n"+str(r)	
-
-	return a
-
-def ap(args):
-	f = open("dump.txt","w")
-	start = int(args[0])
-	iterations = len(coins)
-	uniquePolys = int(lcm(coins))
-	for i in range(start,start+uniquePolys*iterations):
-		
-		#Argument to Pass Into the LC Function (Starting Value,Step, Number of Iterations)
-		passArg = [str(i),str(uniquePolys),str(iterations)]
-		f.write(str(i%uniquePolys) + " "+lc(passArg).split("\n")[0] + "\n")	
-
-def cs(args):
-	#Compare to Schurs
-
-	start = 1
-	step = 1
-	iterations = int(args[0])
-	
-	
-	without = lc([start,step,iterations]).split("\n")[0]
-	xAxis = list(range(1,1+iterations))
-	yAxis = []
-
-	productOfCoins = 1
-
-	for i in range(0,len(coins)):
-		productOfCoins*=coins[i]
-	firstTerm = 1/(factorial(len(coins)-1)*productOfCoins)	
-	degree = len(coins)-1
-	
-	for i in xAxis:
-		yAxis.append(getChange(i,coins) - i**degree*firstTerm)
-		
-	reg = calcRegression(xAxis,yAxis,degree-1)[0]
-
-	for i in reg:
-		i = round(i,PRECISION)
-
-	equation = str(round(firstTerm,PRECISION))+"x^"+str(degree) + " "
-	for i in range(0,len(reg)):
-		equation+=str(round(reg[i],5))+"x^"+str(degree-(1+i))
-		equation+=" "
-	return [without,equation] 	
-	
 
 def parse(command):
 	global coins
@@ -85,7 +10,7 @@ def parse(command):
 	if(len(command)>=2):
 		args = command[1:]
 	if(len(command)>=1):
-		command = command[0]
+		command = command[0].lower()
 
 	if(command == "gc"):
 		c = int(args[0])
@@ -99,18 +24,29 @@ def parse(command):
 		print("Current Coins",list(map(lambda x: print(x,end=" "),coins)))
 
 	elif(command == "lc"):
-		print(lc(args))
+		print(lc(coins,args))
 
 
 	elif(command == "ap"):
-		ap(args)
+		ap(coins,args)
 
 	elif(command == "cs"):
-		print(cs(args)[0])
-		print(cs(args)[1])
+		
+		schurResult = cs(coins,args)
+
+		#Value from Schur's Theorem
+		print(schurResult[0])
+		
+		#Value from Regression
+		print(schurResult[1])
+	elif(command == "h"):
+		print("GC [Amount], returns amount of change for amount")
+	
 #Where all the user input is taken
 def mainLoop():
-	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys\ncs Compare to Schurs")
+	
+	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys\ncs Compare to Schurs\nh Help")
+	
 	#Basic Command Line 
 	command = input("> ")
 
