@@ -1,0 +1,7 @@
+GC Get Change
+PC Print Coins
+SC Set Coins
+LC List Coins
+AP All Polynomials
+CS Compare to Schur's
+H Help

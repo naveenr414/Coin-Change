@@ -1,0 +1,5 @@
+Observations|
+-------------
+
+- For [2,4,6,8], There is no smaller repition (for AP), smallest is 24, also LCM
+- For [1,2,4,6,8], There is no consistent one, but [0,8] and [1,9] and others match

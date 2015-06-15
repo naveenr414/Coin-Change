@@ -21,6 +21,7 @@ def lc(coins,args):
 	
 
 	coef = regression[0]
+	
 	#Pearson R Value between [-1,1]
 	r = regression[1]		
 
@@ -30,20 +31,26 @@ def lc(coins,args):
 		#The last term is x^0, so subtract 1
 		equation+=str(coef[i])+"x^"+str(len(coef)-(i+1))+" "
 	
-	#Add the R Value
 	equation+="\n"+str(r)	
 
 	return equation
 
 def ap(coins,args):
+
 	f = open("dump.txt","w")
+	
 	start = int(args[0])
 	iterations = len(coins)
 	uniquePolys = int(lcm(coins))
+	
 	for i in range(start,start+uniquePolys*iterations):
 		
 		#Argument to Pass Into the LC Function (Starting Value,Step, Number of Iterations)
 		passArg = [str(i),str(uniquePolys),str(iterations)]
+
+		#Write the current number (Loops mod Polys because they all should be the same)
+		#Also write the actual polynomial
+
 		f.write(str(i%uniquePolys) + " "+lc(coins,passArg).split("\n")[0] + "\n")	
 
 def cs(coins,args):

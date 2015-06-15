@@ -1,0 +1,2 @@
+SC [C1] [C2]..[CN] - Set Coins
+Sets the current coins to [C1] through [CN]

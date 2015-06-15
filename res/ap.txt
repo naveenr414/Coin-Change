@@ -1,0 +1,7 @@
+AP [Start] - All Polynomials
+In a file "Dump.txt", write the regression values. 
+Each regression value starts at 1 till n.
+It repeats [Number of Coins - 1]*[LCM of Coins] times,
+printing the currnet iteration mod LCM of Coins. 
+Every N polynomials should be the same (where need to find N). 
+For Example, for American, it is every 5th coin is the same. 

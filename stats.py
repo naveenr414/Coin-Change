@@ -25,7 +25,6 @@ def calcRegression(xAxis,yAxis,degree):
 	#Calculate the R Value, difference between actual values and expectedValues
 	r = corrcoef(yAxis,expectedValues)[0,1]
 
-	#Round the coefficients
 	for i in range(0,len(curve)):
 		curve[i] = round(curve[i],PRECISION)
 

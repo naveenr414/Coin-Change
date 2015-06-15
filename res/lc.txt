@@ -1,0 +1,3 @@
+LC [Start] [Step] [Iteration] - List Coins
+Calculates the polynomial that fits all of the coins
+From Start till Start+Step*Iterations

@@ -1,4 +1,5 @@
 from base import *
+import stats
 
 coins = [1,5,10,25]
 
@@ -21,12 +22,13 @@ def parse(command):
 		for i in range(0,len(args)):
 			coins.append(int(args[i]))
 		
-		print("Current Coins",list(map(lambda x: print(x,end=" "),coins)))
+		print("Current Coins",*coins,sep=" ")
 
 	elif(command == "lc"):
-		print(lc(coins,args))
-
-
+		if(len(args)!=3):
+			print("Invalid input, must be in form [Begin],[Step],[Iterations]")
+		else:
+			print(lc(coins,args))
 	elif(command == "ap"):
 		ap(coins,args)
 
@@ -39,14 +41,27 @@ def parse(command):
 		
 		#Value from Regression
 		print(schurResult[1])
-	elif(command == "h"):
+	elif(command == "h" and len(args) == 0):
 		print("GC [Amount], returns amount of change for amount")
 	
+	elif(command == "h"):
+		try:
+			f = open("res/"+str(args[0])+".txt","r")
+			print(f.read(),end="")
+		except FileNotFoundError:
+			print("No Command '"+str(args[0])+"'")
+
+	elif(command == "pc"):
+		print(*coins,sep=" ")
+		
 #Where all the user input is taken
 def mainLoop():
 	
-	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys\ncs Compare to Schurs\nh Help")
+#	print("gc, Get Coins\nsc, Set Coins\nlc, List Coins\nap All Polys\ncs Compare to Schurs\nh Help")
+#	print("pc, Print Coins")
 	
+	print(open("res/instructions.txt","r").read(),end="")	
+
 	#Basic Command Line 
 	command = input("> ")
 

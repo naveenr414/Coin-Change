@@ -1,0 +1,3 @@
+CS [End] - Compare to Schur's
+Calculates predicited value with List Coins
+To that predicted by Schur's+Regressing Residiuals. 
