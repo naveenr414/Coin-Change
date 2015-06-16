@@ -4,4 +4,5 @@ SC Set Coins
 LC List Coins
 AP All Polynomials
 CS Compare to Schur's
+CC Compare Ceiling
 H Help

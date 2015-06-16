@@ -1,0 +1,4 @@
+CC [Number] - Compare ceiling for the number
+Loops through all of the polynomials, and checks if
+The Number is the same as the non Constant Terms
+Ceilinged. 

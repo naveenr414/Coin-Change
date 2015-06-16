@@ -53,6 +53,9 @@ def parse(command):
 
 	elif(command == "pc"):
 		print(*coins,sep=" ")
+
+	elif(command == "cc"):
+		cc(coins,args)
 		
 #Where all the user input is taken
 def mainLoop():

@@ -1,5 +1,6 @@
 from stats import calcRegression,PRECISION
 from util import lcm,factorial
+from math import ceil
 
 def lc(coins,args):
 	#Get the regression value for a list of coins
@@ -52,6 +53,42 @@ def ap(coins,args):
 		#Also write the actual polynomial
 
 		f.write(str(i%uniquePolys) + " "+lc(coins,passArg).split("\n")[0] + "\n")	
+	f.close()
+	
+def cc(coins,args):
+	#Calculate the difference between Ceiling and Formula values
+
+	f = open("dump.txt","w")	
+
+	start = int(args[0])
+	uniquePolys = int(lcm(coins))
+
+	for i in range(start,start+uniquePolys):
+		
+		#Same as AP, Passing Arguments into LC
+		passArg = [str(i),str(uniquePolys),"4"]
+
+		equation = lc(coins,passArg).split("\n")[0]
+#		f.write(equation +" ")
+		equation = equation.split()
+		
+		#Value when start is plugged in, using Ceiling
+		result = 0
+		for i in range(0,len(equation)-1):
+			coef = float(equation[i].split("x^")[0])
+			degree = int(equation[i].split("x^")[1])
+			result+=coef*start**degree
+			
+		f.write(str(ceil(result)) + " ")
+
+		#Add the constant term
+		result+=float(equation[-1].split("x^")[0])
+		result = round(result,PRECISION)
+		
+		f.write(str(result))
+		f.write("\n")
+
+	f.close()
 
 def cs(coins,args):
 	#Compare to Schurs
